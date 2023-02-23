@@ -9,6 +9,7 @@ const galleryItem = galleryItems
         return `<div class="gallery__item image">
           <a class="gallery__link" href="${original}">
             <img
+            loading="lazy"
               class="gallery__image "
               src="${preview}"
               data-source="${original}"
@@ -37,6 +38,9 @@ function onImageClick(e) {
     );
     instance.show();
 
+    closeModalOnKeypress(e, instance);
+}
+function closeModalOnKeypress(e, instance) {
     window.addEventListener("keydown", (e) => {
         if (e.code !== "Escape") {
             return;
