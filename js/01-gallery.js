@@ -1,7 +1,6 @@
 import { galleryItems } from "./gallery-items.js";
 // Change code below this line
 
-//1. Создание и рендер разметки по массиву данных galleryItems и предоставленному шаблону элемента галереи.
 const galleryEl = document.querySelector(".gallery");
 
 const galleryItem = galleryItems
@@ -21,9 +20,27 @@ const galleryItem = galleryItems
     .join("");
 galleryEl.insertAdjacentHTML("beforeend", galleryItem);
 
-// 2.Реализация делегирования на div.gallery и получение url большого изображения.
+function openModal(url) {
+    let instance;
+    function onEscKeydown(e) {
+        if (e.code === "Escape") {
+            instance.close();
+        }
+    }
 
-galleryEl.addEventListener("click", onImageClick);
+    instance = basicLightbox.create(
+        `<img width="1400" height="900" src="${url}"/>`,
+        {
+            onShow: () => {
+                window.addEventListener("keydown", onEscKeydown);
+            },
+            onClose: () => {
+                window.removeEventListener("keydown", onEscKeydown);
+            },
+        }
+    );
+    instance.show();
+}
 
 function onImageClick(e) {
     e.preventDefault();
@@ -33,18 +50,7 @@ function onImageClick(e) {
         return;
     }
 
-    const instance = basicLightbox.create(
-        `<img width="1400" height="900" src="${imageEl.dataset.source}">`
-    );
-    instance.show();
+    openModal(imageEl.dataset.source);
+}
 
-    closeModalOnKeypress(e, instance);
-}
-function closeModalOnKeypress(e, instance) {
-    window.addEventListener("keydown", (e) => {
-        if (e.code !== "Escape") {
-            return;
-        }
-        instance.close();
-    });
-}
+galleryEl.addEventListener("click", onImageClick);
